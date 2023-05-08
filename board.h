@@ -102,18 +102,57 @@ void Board::print_job(int job_idx, char job_type, int id) {
 
 
 void Board::insert_page(int x, int y, int width, int height, int id, int content) {
-
+    Page newpage = Page(x, y, w, h, id, c);
+    pagemap.insert({id, newpage});
+    board_insert(x, y, w, h, id);
+    set_board(x, y, w, h, c);
+    print_board();
 }
 
 void Board::delete_page(int id) {
-    
+    int save = id;
+    delete_seq(id, save);
+    insert_seq(id, save);
+    board_delete(pagemap[id].getx(), pagemap[id].gety(), pagemap[id].getw(), pagemap[id].geth(), id);
+    pagemap.erase(id); 
 }
 
 void Board::modify_content(int id, char content) {
-   
-
+    int save = id;
+    delete_seq(id, save);
+    Page modpage = Page(pagemap[id].getx(), pagemap[id].gety(), pagemap[id].getw(), pagemap[id].geth(), id, content);
+    pagemap[id] = modpage;
+    for (int h = pagemap[id].gety(); h < pagemap[id].gety() + pagemap[id].geth(); h++){
+        for (int w = pagemap[id].getx(); w < pagemap[id].getx() + pagemap[id].getw(); w++){
+            board[h * width + w] = content;
+        }
+    }
+    print_board();
+    insert_seq(id, save);
 }
 void Board::modify_position(int id, int x, int y) {
-   
-    
+    int save = id;
+    delete_seq(id, save);
+    for (int h = y; h < y + pagemap[id].geth(); h++){
+        for (int w = x; w < x + pagemap[id].getw(); w++){
+            int k = h * width + w;
+            for (auto itr = boardlst[k].begin(); itr != boardlst[k].end(); itr++){
+                if (pagemap[boardlst[k][itr - boardlst[k].begin()]].getc() == board[k]){
+                    boardlst[k].insert(itr + 1, id);
+                    break;
+                }
+            }
+            board[k] = pagemap[id].getc();
+        }
+    }
+    print_board();
+    insert_seq(id, save);
+    for (int h = pagemap[id].gety(); h < pagemap[id].gety() + pagemap[id].geth(); h++){
+        for (int w = pagemap[id].getx(); w < pagemap[id].getx() + pagemap[id].getw(); w++){
+            int k = h * width + w;
+            boardlst[k].erase(remove(boardlst[k].begin(), boardlst[k].end(), id));
+        }
+    }
+    Page modpage = Page(x, y, pagemap[id].getw(), pagemap[id].geth(), id, pagemap[id].getc());
+    pagemap[id] = modpage;
 }
