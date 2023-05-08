@@ -1,9 +1,15 @@
 #include <fstream>
-
+#include <vector>
+#include <map>
+#include <algorithm>
 #include "page.h"
 
 using std::endl;
 using std::ofstream;
+using std::vector;
+using std::map;
+using std::find;
+using std::remove;
 
 class Board {
     public:
@@ -18,11 +24,20 @@ class Board {
         void delete_page(int id);
         void modify_content(int id, char content);
         void modify_position(int id, int x, int y);
+        void set_board(int x, int y, int w, int h, char cont);
+        void board_insert(int x, int y, int w, int h, int id);
+        void board_delete(int x, int y, int w, int h, int id);
+        void delete_seq(int id, int save);
+        void insert_seq(int id, int save);
+        int find_min(int id);
+        int find_max(int id);
 
     private:
         int num_jobs, width, height; 
         ofstream& output; 
         char* board; 
+        map <int, Page> pagemap;
+        vector<int>* boardlst;
 };
 
 
