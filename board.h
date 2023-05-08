@@ -198,3 +198,27 @@ void Board::delete_seq(int id, int save){
         delete_seq(id, save);
     }
 }
+
+void Board::insert_seq(int id, int save){
+    if (find_max(id) != -1){ 
+        if (id != save){ 
+            set_board(pagemap[id].getx(), pagemap[id].gety(), pagemap[id].getw(), pagemap[id].geth(), pagemap[id].getc());
+            print_board();
+            }
+        insert_seq(find_max(id), save);
+        insert_seq(id, save);
+    }
+    else{
+        if (id != save){
+            for (int h = pagemap[id].gety(); h < pagemap[id].gety() + pagemap[id].geth(); h++){
+                for (int w = pagemap[id].getx(); w < pagemap[id].getx() + pagemap[id].getw(); w++){
+                    if (board[h * width + w] == pagemap[id].getc()){
+                        return;
+                    }
+                }
+            }
+            set_board(pagemap[id].getx(), pagemap[id].gety(), pagemap[id].getw(), pagemap[id].geth(), pagemap[id].getc());
+            print_board();
+        }
+    }
+}
