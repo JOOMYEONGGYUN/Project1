@@ -182,3 +182,19 @@ void Board::board_delete(int x, int y, int w1, int h1, int id){
         }
     }
 }
+
+void Board::delete_seq(int id, int save){
+    if (find_min(id) == 32768){
+        for (int h = pagemap[id].gety(); h < pagemap[id].gety() + pagemap[id].geth(); h++) {
+            for (int w = pagemap[id].getx(); w < pagemap[id].getx() + pagemap[id].getw(); w++) {
+                int j = h * width + w;
+                board[j] = pagemap[boardlst[j][find(boardlst[j].begin(), boardlst[j].end(), id) - boardlst[j].begin() - 1]].getc();
+            }
+        }
+        print_board();
+    } 
+    else{
+        delete_seq(find_min(id), save);
+        delete_seq(id, save);
+    }
+}
