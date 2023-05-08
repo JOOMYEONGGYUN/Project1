@@ -222,3 +222,19 @@ void Board::insert_seq(int id, int save){
         }
     }
 }
+
+int Board::find_min(int id){
+    int idmin = 32768;
+    for (int h = pagemap[id].gety(); h < pagemap[id].gety() + pagemap[id].geth(); h++){
+        for (int w = pagemap[id].getx(); w < pagemap[id].getx() + pagemap[id].getw(); w++){
+            int k = h * width + w;
+            if (board[k] != pagemap[id].getc()){
+                int j = boardlst[k][find(boardlst[k].begin(), boardlst[k].end(), id) - boardlst[k].begin() + 1];
+                if (j < idmin){
+                    idmin = j;
+                }
+            }
+        }
+    }
+    return idmin;
+}
