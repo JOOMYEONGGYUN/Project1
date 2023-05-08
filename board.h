@@ -20,7 +20,7 @@ class Board {
         void print_job(int job_idx, char job_type, int id);
 
         //job functions
-        void insert_page(int x, int y, int width, int height, int id, int content);
+        void insert_page(int x, int y, int width, int height, int id, char content);
         void delete_page(int id);
         void modify_content(int id, char content);
         void modify_position(int id, int x, int y);
@@ -101,7 +101,7 @@ void Board::print_job(int job_idx, char job_type, int id) {
 }
 
 
-void Board::insert_page(int x, int y, int width, int height, int id, int content) {
+void Board::insert_page(int x, int y, int w, int h, int id, char c) {
     Page newpage = Page(x, y, w, h, id, c);
     pagemap.insert({id, newpage});
     board_insert(x, y, w, h, id);
@@ -130,6 +130,7 @@ void Board::modify_content(int id, char content) {
     print_board();
     insert_seq(id, save);
 }
+
 void Board::modify_position(int id, int x, int y) {
     int save = id;
     delete_seq(id, save);
@@ -155,4 +156,29 @@ void Board::modify_position(int id, int x, int y) {
     }
     Page modpage = Page(x, y, pagemap[id].getw(), pagemap[id].geth(), id, pagemap[id].getc());
     pagemap[id] = modpage;
+}
+
+void Board::set_board(int x, int y, int w1, int h1, char cont){
+    for (int h = y; h < y + h1; h++) {
+        for (int w = x; w < x + w1; w++) {
+            board[h*width + w] = cont;
+        }
+    }
+}
+
+void Board::board_insert(int x, int y, int w1, int h1, int id){
+    for (int h = y; h < y + h1; h++){
+        for (int w = x; w < x + w1; w++){
+            boardlst[h * width + w].push_back(id);
+        }
+    }
+}
+
+void Board::board_delete(int x, int y, int w1, int h1, int id){
+    for (int h = y; h < y + h1; h++){
+        for (int w = x; w < x + w1; w++){
+            int k = h * width + w;
+            boardlst[k].erase(find(boardlst[k].begin(), boardlst[k].end(), id));
+        }
+    }
 }
