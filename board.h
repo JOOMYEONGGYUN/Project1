@@ -47,6 +47,9 @@ Board::Board(int num_jobs, int width, int height, ofstream& output_stream): outp
     this->num_jobs = num_jobs;
 
     board = new char[width*height];
+    boardlst = new vector<int>[width * height];
+    Page def = Page(' ');
+    pagemap.insert({-1, def});
 
     for (int h = 0; h < height; h++) {
         for (int w = 0; w < width; w++) {
