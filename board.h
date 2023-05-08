@@ -238,3 +238,41 @@ int Board::find_min(int id){
     }
     return idmin;
 }
+
+int Board::find_max(int id){
+    int idmax = -1;
+    vector<int> idcand;
+    for (int h = pagemap[id].gety(); h < pagemap[id].gety() + pagemap[id].geth(); h++){
+        for (int w = pagemap[id].getx(); w < pagemap[id].getx() + pagemap[id].getw(); w++){
+            int k = h * width + w;
+            int j = -1;
+            for (int itr = boardlst[k].size() - 1; itr >=0; itr--){
+                if (boardlst[k][itr] == id){
+                    j = itr; 
+                    break;
+                }
+            }
+            if (j != boardlst[k].size() - 1){ 
+                if (idcand.size() != 0){
+                    if (find(idcand.begin(), idcand.end(), boardlst[k][j + 1]) == idcand.end()){
+                        idcand.push_back(boardlst[k][j + 1]); 
+                    }
+                } 
+                else{
+                    idcand.push_back(boardlst[k][j + 1]);
+                }
+                for (auto elem : idcand){
+                    if (board[k] == pagemap[elem].getc()){
+                        idcand.erase(remove(idcand.begin(), idcand.end(), elem)); 
+                    }
+                }
+            }
+        }
+    }
+    for (auto elem : idcand){
+        if (elem > idmax){
+            idmax = elem;
+        }
+    }
+    return idmax; 
+}
